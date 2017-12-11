@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 import pygame
 import random
 import time
@@ -11,6 +12,8 @@ pygame.init()
 white = (255,255,255)
 black = (0,0,0)
 red=(255,0,0)
+orange=(255,94,0)
+violet=(255,0,127)
 green=(0,155,0)
 yellow=(200,200,0)
 
@@ -96,6 +99,7 @@ def game_info():
 def button(text,x,y,width,height,inactive_color,active_color,action=None):
 	cur=pygame.mouse.get_pos()
 	click=pygame.mouse.get_pressed()
+	global lev
 
 	if x<cur[0]<x+width and y<cur[1]<y+height:
 		pygame.draw.rect(gameDisplay,active_color,(x,y,width,height))
@@ -105,9 +109,30 @@ def button(text,x,y,width,height,inactive_color,active_color,action=None):
 				quit()
 
 			elif action == "Play":
-		                pygame.mixer.music.stop()
-				Thread(target = gameSound).start()
-				gameLoop()
+		                #pygame.mixer.music.stop()
+				#Thread(target = gameSound).start()
+				#gameLoop()
+                                level_select()
+
+                        elif action == "1":
+                                lev = 1
+                                gameLoop()
+
+                        elif action == "2":
+                                lev = 2
+                                gameLoop()
+                                
+                        elif action == "3":
+                                lev = 3
+                                gameLoop()
+
+                        elif action == "4":
+                                lev = 4
+                                gameLoop()
+
+                        elif action == "5":
+                                lev = 5
+                                gameLoop()
 
 			elif action == "Info":
 				game_info()
@@ -119,6 +144,31 @@ def button(text,x,y,width,height,inactive_color,active_color,action=None):
 
 	text_to_button(text,white,x,y,width,height)
 
+#레벨 선택 화면
+def level_select():
+        level = True
+        while level:
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                pygame.quit()
+                                quit()
+
+                gameDisplay.fill(black)
+                message_to_screen("LEVEL", red, -200, size="medium")
+                message_to_screen("Choose Level", green, -100, size="small")
+
+                button("LEVEL 1", 100, 300, 100, 50, red, violet, action="1")
+                button("LEVEL 2", 230, 300, 100, 50, orange, violet, action="2")
+                button("LEVEL 3", 360, 300, 100, 50, yellow, violet, action="3")
+                button("LEVEL 4", 490, 300, 100, 50, green, violet, action="4")
+                button("RANDOM", 620, 300, 100, 50, (50,50,150), violet, action="5")
+
+                button("Back", 200, 500, 100, 50, (50,150,50), violet, action="Back")
+                button("Quit", 500, 500, 100, 50, (50,50,150), violet, action="Quit")
+
+                pygame.display.update()
+                fps.tick(20)
+                
 randcirclelist = []
 
 #Start Screen.
@@ -259,10 +309,28 @@ def detectCollisions(x1,y1,w1,h1,x2,y2,w2,h2):
 def gameLoop():
 	#Score
         count = 0
+
+        #선택된 레벨로 지정
+        if lev == 1:
+                level_obj = Level(0)
+                level = level_obj.levels()
+        elif lev == 2:
+                level_obj = Level(1)
+                level = level_obj.levels()
+        elif lev == 3:
+                level_obj = Level(2)
+                level = level_obj.levels()
+        elif lev == 4:
+                level_obj = Level(3)
+                level = level_obj.levels()
+        elif lev == 5:
+                randIndex = random.randrange(0, 3)
+                level_obj = Level(randIndex)
+                level = level_obj.levels()
         
-	randIndex = random.randrange(0,3)
-        level_obj = Level(randIndex)
-        level = level_obj.levels()
+	#randIndex = random.randrange(0,3)
+        #level_obj = Level(randIndex)
+        #level = level_obj.levels()
 	brickList = []
 	#Set up a color for each row of the bricks.
 	for y in range(len(level)):
