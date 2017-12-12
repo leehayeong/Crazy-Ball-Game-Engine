@@ -82,12 +82,14 @@ def game_info():
 				quit()
 
 		gameDisplay.fill(black)
-		message_to_screen("Controls",red,-100,size="large")
-		message_to_screen("To move the slider up : w",red,-30)
-		message_to_screen("To move the slider down : s",red,10)
-		message_to_screen("To move the bottom slider right : right arrow key",red,50)
-		message_to_screen("To move the bottom slider left : left arrow key",red,90)
-		message_to_screen("Pause : p",red,130)
+		message_to_screen("Controls",red,-200,size="large")
+		message_to_screen("To move the slider up : up arrow key",red,-130)
+		message_to_screen("To move the slider down : down arrow key",red,-90)
+		message_to_screen("To move the bottom slider right : right arrow key",red,-50)
+		message_to_screen("To move the bottom slider left : left arrow key",red,-10)
+		message_to_screen("To make the ball speed up : r",red,30)
+		message_to_screen("To make the ball speed down : w",red,70)
+		message_to_screen("Pause : p",red,110)
 				
 		button("Play",150,500,100,50,(150,50,50),green,action="Play")
 		button("Back",350,500,100,50,(50,150,50),green,action="Back")
@@ -250,6 +252,8 @@ def pause():
 	
 	message_to_screen("Paused",red,-100,size="medium")
 	message_to_screen("Press S to continue or Q to quit",green,25,size="small")
+	message_to_screen("Press R to speed up",white,75,size="small")
+	message_to_screen("Press W to speed down",white,125,size="small")
 	pygame.display.update()
 
 	while paused:
@@ -318,6 +322,17 @@ life = pygame.image.load('Sprites/life.bmp')
 
 #게임 목숨이 화면에 보이게
 def showGameLife(lifeNum):
+        if(lifeNum == 5):
+                gameDisplay.blit(life, (590, 15))
+                gameDisplay.blit(life, (630, 15))
+                gameDisplay.blit(life, (670, 15))
+                gameDisplay.blit(life, (710, 15))
+                gameDisplay.blit(life, (750, 15))
+        if(lifeNum == 4):
+                gameDisplay.blit(life, (630, 15))
+                gameDisplay.blit(life, (670, 15))
+                gameDisplay.blit(life, (710, 15))
+                gameDisplay.blit(life, (750, 15))
         if(lifeNum == 3):
                 gameDisplay.blit(life, (670, 15))
                 gameDisplay.blit(life, (710, 15))
@@ -327,6 +342,7 @@ def showGameLife(lifeNum):
                 gameDisplay.blit(life, (750, 15))
         elif(lifeNum == 1):
                 gameDisplay.blit(life, (750, 15))
+              
 
 #Main game loop.
 def gameLoop():
@@ -422,6 +438,14 @@ def gameLoop():
 				elif event.key == pygame.K_RIGHT:
 					x_change_1=15
 					y_change_1=0
+
+				elif event.key == pygame.K_r:
+                                        dx*=1.5
+                                        dy*=1.5
+
+                                elif event.key == pygame.K_w:
+                                        dy = dy / 2.0
+                                        dy = dy / 2.0
 				
 				elif event.key == pygame.K_UP:
 					x_change_2=0
@@ -466,6 +490,13 @@ def gameLoop():
                                 gameLife -= 1
                                 ball_x = random.randrange(250, 400)
                                 ball_y = random.randrange(250, 500)
+                                dx = 7
+                                dy = 7
+                                cur_x_1 = 400
+                                cur_y_1 = 550
+                                cur_x_2 = 20
+                                cur_y_2 = 300 
+                                
 		if a1 == True:
 			dy*=-1
 			dx = dx + (ball_x - cur_x_1-40)/20 - x_change_1/3
@@ -488,6 +519,12 @@ def gameLoop():
                                 gameLife -= 1
                                 ball_x = random.randrange(250, 400)
                                 ball_y = random.randrange(250, 500)
+                                dx = 7
+                                dy = 7
+                                cur_x_1 = 400
+                                cur_y_1 = 550
+                                cur_x_2 = 20
+                                cur_y_2 = 300
 			
 		elif ball_x>=790:
 			dx*=-1
@@ -500,6 +537,12 @@ def gameLoop():
                                 gameLife -= 1
                                 ball_x = random.randrange(250, 400)
                                 ball_y = random.randrange(250, 500)
+                                dx = 7
+                                dy = 7
+                                cur_x_1 = 400
+                                cur_y_1 = 550
+                                cur_x_2 = 20
+                                cur_y_2 = 300
 			
 		elif ball_y<0:
 			dy*=-1
@@ -517,6 +560,13 @@ def gameLoop():
 		#If the ball collides with the brick, then remove the brick from brickList.
 		     a,b = detectCollisions(ball_x, ball_y, 10,10,brick.x, brick.y, brick.width, brick.height)
 	       	     if a == True and b == 3:
+
+                            # 1/10의 확률로 생명 추가. 생명 최대 개수는 5개.
+                            randNum = random.randrange(0, 10)
+                            if(randNum == 5 and gameLife < 5) :
+                                    gameLife += 1
+                                    print("add gameLife. {0}".format(gameLife))
+                            
 			    brickList.remove(brick)
 			    dy *= -1
 			    dx *= 1
@@ -526,6 +576,12 @@ def gameLoop():
 			    #ball_y+=dy
 
 	       	     elif a == True and b == 4:
+
+                            randNum = random.randrange(0, 10)
+                            if(randNum == 5 and randNum < 5) :
+                                    gameLife += 1
+                                    print("add gameLife. {0}".format(gameLife))
+                                    
 			    brickList.remove(brick)
 			    dx *= -1
 		            dy *= 1
