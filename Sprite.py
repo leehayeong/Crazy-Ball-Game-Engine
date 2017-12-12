@@ -15,11 +15,11 @@ class Sprite:
                         self.i0 = pygame.image.load("Sprites/b.bmp")
                         self.i1 = pygame.image.load("Sprites/b.bmp")
                 elif lev == 4:
-                        self.i0 = pygame.image.load("Sprites/b.bmp")
-                        self.i1 = pygame.image.load("Sprites/b.bmp")
+                        self.i0 = pygame.image.load("Sprites/by.bmp")
+                        self.i1 = pygame.image.load("Sprites/by.bmp")
                 elif lev == 5:
-                        self.i0 = pygame.image.load("Sprites/b.bmp")
-                        self.i1 = pygame.image.load("Sprites/b.bmp")
+                        self.i0 = pygame.image.load("Sprites/bb.bmp")
+                        self.i1 = pygame.image.load("Sprites/bb.bmp")
                         
  
 		self.timeTarget=10
