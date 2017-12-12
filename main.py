@@ -272,6 +272,7 @@ def levelcomplete(count):
     message_to_screen("You Win!",(155,155,155),-50,size="medium")  
     score(count)    
     message_to_screen("Press S to continue or Q to quit",green,25,size="small")
+    message_to_screen("or L to select level", green, 75, size = "small")
     pygame.display.update()
         
     while paused:
@@ -282,10 +283,14 @@ def levelcomplete(count):
                         
                 if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_s:
-				 gameLoop()
+                                gameLife = 3
+				gameLoop()
                         elif event.key == pygame.K_q:
                                 pygame.quit()
                                 quit()
+                        elif event.key == pygame.K_l:
+                                level_select()
+                                gameLife = 3
             fps.tick(5)
 
 
@@ -304,6 +309,24 @@ def detectCollisions(x1,y1,w1,h1,x2,y2,w2,h2):
             	    return True,4
 	    	else:
 		    return False,0 
+
+#게임 목숨 수
+gameLife = 3
+
+#게임 목숨 이미지
+life = pygame.image.load('Sprites/life.bmp')
+
+#게임 목숨이 화면에 보이게
+def showGameLife(lifeNum):
+        if(lifeNum == 3):
+                gameDisplay.blit(life, (670, 15))
+                gameDisplay.blit(life, (710, 15))
+                gameDisplay.blit(life, (750, 15))
+        elif(lifeNum == 2):
+                gameDisplay.blit(life, (710, 15))
+                gameDisplay.blit(life, (750, 15))
+        elif(lifeNum == 1):
+                gameDisplay.blit(life, (750, 15))
 
 #Main game loop.
 def gameLoop():
@@ -370,6 +393,7 @@ def gameLoop():
 		if gameOver == True:
 			message_to_screen("Game over",(0,255,150),-50,size = "large")
 			message_to_screen("Press S to play again or Q to quit",white,50,size = "small")
+                        message_to_screen("or L to select level",white,100,size = "small")
 			pygame.display.update()
 
 		while gameOver == True:
@@ -379,7 +403,13 @@ def gameLoop():
 						gameExit = True
 						gameOver = False
 					if event.key == pygame.K_s:
-						gameLoop()	
+                                                global gameLife
+                                                gameLife = 3
+						gameLoop()
+					if event.key == pygame.K_l:
+                                                gameLife = 3
+                                                level_select()
+						
 
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -428,8 +458,14 @@ def gameLoop():
 		a1,b1=detectCollisions(ball_x, ball_y, 10,10,cur_x_1, cur_y_1-12,80,10)
 		
 		if (ball_y + 10) > cur_y_1 and (ball_x+10 < cur_x_1 or ball_x > cur_x_1+80):
-			a1 == False
-			gameOver = True
+                        if(gameLife <= 1):
+                                gameLife = 0
+                                a1 == False
+                                gameOver = True
+                        else :
+                                gameLife -= 1
+                                ball_x = random.randrange(250, 400)
+                                ball_y = random.randrange(250, 500)
 		if a1 == True:
 			dy*=-1
 			dx = dx + (ball_x - cur_x_1-40)/20 - x_change_1/3
@@ -443,12 +479,28 @@ def gameLoop():
 			#pygame.mixer.music.load('Sounds/Boing.mp3')
             		#pygame.mixer.music.play(1)
 			
-		if ball_x<=0: 
-			gameOver = True
+		if ball_x<=0:
+                        if(gameLife <= 1):
+                                gameLife = 0
+                                a1 == False
+                                gameOver = True
+                        else :
+                                gameLife -= 1
+                                ball_x = random.randrange(250, 400)
+                                ball_y = random.randrange(250, 500)
+			
 		elif ball_x>=790:
 			dx*=-1
 		if ball_y>=590:
-			gameOver = True
+                        if(gameLife <= 1):
+                                gameLife = 0
+                                a1 == False
+                                gameOver = True
+                        else :
+                                gameLife -= 1
+                                ball_x = random.randrange(250, 400)
+                                ball_y = random.randrange(250, 500)
+			
 		elif ball_y<0:
 			dy*=-1
 
@@ -457,6 +509,10 @@ def gameLoop():
 		gameDisplay.fill(black)
 	 	gameDisplay.blit(slider, (cur_x_1, cur_y_1))
 	   	gameDisplay.blit(slider2, (cur_x_2, cur_y_2))
+
+                #목숨의 개수와 형태를 보여주도록 하는 함수 호출
+	   	showGameLife(gameLife)
+	   	
 	   	for brick in brickList:
 		#If the ball collides with the brick, then remove the brick from brickList.
 		     a,b = detectCollisions(ball_x, ball_y, 10,10,brick.x, brick.y, brick.width, brick.height)
