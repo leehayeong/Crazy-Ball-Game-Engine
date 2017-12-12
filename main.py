@@ -29,7 +29,7 @@ gameDisplay = pygame.display.set_mode((800,600))
 pygame.display.set_caption('Crazy Ball')
 
 #Import the image files to be used as sliders.
-icon = pygame.image.load('Sprites/slider.bmp')
+icon = pygame.image.load('Sprites/brick-wall.png')
 pygame.display.set_icon(icon)
 
 smallfont=pygame.font.SysFont("courier", 25)
@@ -359,7 +359,7 @@ def gameLoop():
 	ball_y=random.randrange(250,500)
 	
 	#To initialize the sprite object.
-	spriteball = Sprite(ball_x, ball_y)
+	spriteball = Sprite(ball_x, ball_y, lev)
 	#dx=random.randrange(3,5)
 	#dy=random.randrange(3,5)
 	dy = 7
